@@ -66,60 +66,60 @@ class InstallerController extends Controller
             return redirect()->route('setup.requirements')->withInput()->withErrors(['errors' => 'Your server does not meet the minimum requirements.']);
         }
 
-        try {
-            $request->validate([
-                'host' => 'required|ip',
-                'port' => 'required|integer',
-                'database' => 'required',
-                'user' => 'required',
-            ]);
+        // try {
+        //     $request->validate([
+        //         'host' => 'required|ip',
+        //         'port' => 'required|integer',
+        //         'database' => 'required',
+        //         'user' => 'required',
+        //     ]);
 
-            if (! InstallerInfo::isRemoteLocal()) {
-                $request->validate([
-                    'password' => 'required',
-                ]);
-            }
+        //     if (! InstallerInfo::isRemoteLocal()) {
+        //         $request->validate([
+        //             'password' => 'required',
+        //         ]);
+        //     }
 
-            $databaseCreate = $this->createDatabaseConnection($request->all());
+        //     $databaseCreate = $this->createDatabaseConnection($request->all());
 
-            if ($databaseCreate !== true) {
-                if ($databaseCreate == 'not-found') {
-                    return response()->json(['create_database' => true, 'message' => 'Database not found! Please create the database first.'], 200);
-                } elseif ($databaseCreate == 'table-exist') {
-                    return response()->json(['reset_database' => true, 'message' => 'This database has tables already. Please create a new database or reset existing tables first to continue'], 200);
-                } else {
-                    return response()->json(['success' => false, 'message' => $databaseCreate], 200);
-                }
-            }
+        //     if ($databaseCreate !== true) {
+        //         if ($databaseCreate == 'not-found') {
+        //             return response()->json(['create_database' => true, 'message' => 'Database not found! Please create the database first.'], 200);
+        //         } elseif ($databaseCreate == 'table-exist') {
+        //             return response()->json(['reset_database' => true, 'message' => 'This database has tables already. Please create a new database or reset existing tables first to continue'], 200);
+        //         } else {
+        //             return response()->json(['success' => false, 'message' => $databaseCreate], 200);
+        //         }
+        //     }
 
-            $deleteDummyData = false;
-            if ($request->has('fresh_install') && $request->filled('fresh_install') && $request->fresh_install == 'on') {
-                $deleteDummyData = true;
-                Cache::put('fresh_install', true, now()->addMinutes(60));
-                $migration = $this->importDatabase( InstallerInfo::getFreshDatabaseFilePath() );
-            }else{
-                $migration = $this->importDatabase( InstallerInfo::getDummyDatabaseFilePath() );
-            }
+        //     $deleteDummyData = false;
+        //     if ($request->has('fresh_install') && $request->filled('fresh_install') && $request->fresh_install == 'on') {
+        //         $deleteDummyData = true;
+        //         Cache::put('fresh_install', true, now()->addMinutes(60));
+        //         $migration = $this->importDatabase( InstallerInfo::getFreshDatabaseFilePath() );
+        //     }else{
+        //         $migration = $this->importDatabase( InstallerInfo::getDummyDatabaseFilePath() );
+        //     }
 
-            if ($migration !== true) {
-                return response()->json(['success' => false, 'message' => $migration], 200);
-            }
+        //     if ($migration !== true) {
+        //         return response()->json(['success' => false, 'message' => $migration], 200);
+        //     }
 
-            $this->changeEnvDatabaseConfig($request->except('reset_database'));
+        //     $this->changeEnvDatabaseConfig($request->except('reset_database'));
 
-            if ($migration == true && $deleteDummyData) {
-                $this->removeDummyFiles();
-            }
+        //     if ($migration == true && $deleteDummyData) {
+        //         $this->removeDummyFiles();
+        //     }
 
             Cache::forget('fresh_install');
 
             session()->put('step-3-complete', true);
 
             return response()->json(['success' => true, 'message' => 'Successfully setup the database'], 200);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Database connection failed! Look like you have entered wrong database credentials (host, port, database, user or password).'], 200);
-        }
+        // } catch (Exception $e) {
+        //     Log::error($e->getMessage());
+        //     return response()->json(['success' => false, 'message' => 'Database connection failed! Look like you have entered wrong database credentials (host, port, database, user or password).'], 200);
+        // }
     }
 
     public function account()
