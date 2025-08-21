@@ -124,9 +124,9 @@ class InstallerController extends Controller
 
     public function account()
     {
-        // $step = Configuration::stepExists();
+        $step = Configuration::stepExists();
         // if ( $step >= 1 && $step < 5 && $this->requirementsCompleteStatus()) {
-        //     $admin = $step >= 2 ? Admin::select('name','email')->first() : null;
+            $admin = $step >= 2 ? Admin::select('name','email')->first() : null;
             return view( 'installer::account',compact('admin') );
         // }
         // if($step == 5 || !$this->requirementsCompleteStatus()){
