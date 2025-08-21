@@ -25,6 +25,9 @@ class AppServiceProvider extends ServiceProvider {
      * Bootstrap any application services.
      */
     public function boot(): void {
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
         try {
             /** Cache settings */
             $setting = Cache::rememberForever('setting', fn() => (object) Setting::pluck('value', 'key')->all());
