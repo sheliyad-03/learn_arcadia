@@ -13,21 +13,21 @@ class SetupMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (empty(config('app.key'))) {
-            Artisan::call('key:generate');
-            Artisan::call('config:cache');
-        }
-        $setupStatus = setupStatus();
-        if ($request->is('setup/*')) {
-            if ($setupStatus) {
+        // if (empty(config('app.key'))) {
+        //     Artisan::call('key:generate');
+        //     Artisan::call('config:cache');
+        // }
+        // $setupStatus = setupStatus();
+        // if ($request->is('setup/*')) {
+        //     if ($setupStatus) {
                 return redirect()->route('home');
-            }
+        //     }
 
-            return $next($request);
-        }
-        if (! $setupStatus) {
-            return redirect()->route('setup.verify');
-        }
+        //     return $next($request);
+        // }
+        // if (! $setupStatus) {
+        //     return redirect()->route('setup.verify');
+        // }
 
         return $next($request);
     }
