@@ -8,6 +8,7 @@
             </div>
         </div>
         <form id="database_migrate_form" autocomplete="off">
+            @csrf
             <div class="card-body">
                 <div class="mb-3">
                     <label>Host <span class="text-danger">*</span></label>
@@ -127,6 +128,7 @@
                     ).prop('disabled', true);
                     try {
                         let data = {
+                            _token: '{{ csrf_token() }}',
                             host: host,
                             port: port,
                             database: database,
