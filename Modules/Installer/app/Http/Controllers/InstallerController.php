@@ -178,95 +178,95 @@ class InstallerController extends Controller
     public function configuration()
     {
         $step = Configuration::stepExists();
-        if($step == 5 || !$this->requirementsCompleteStatus()){
-            return redirect()->route( 'setup.requirements' );
-        }
-        if ( $step < 2 ) {
-            return redirect()->route( 'setup.account' );
-        }
+        // if($step == 5 || !$this->requirementsCompleteStatus()){
+        //     return redirect()->route( 'setup.requirements' );
+        // }
+        // if ( $step < 2 ) {
+        //     return redirect()->route( 'setup.account' );
+        // }
         $app_name = $step >= 3 ? Setting::where('key', 'app_name')->first()->value : null;
         return view( 'installer::config',compact('app_name') );
     }
 
     public function configurationSubmit(Request $request)
     {
-        try {
-            $request->validate([
-                'config_app_name' => 'required|string',
-            ]);
+        // try {
+        //     $request->validate([
+        //         'config_app_name' => 'required|string',
+        //     ]);
 
-            Configuration::updateStep(3);
+        //     Configuration::updateStep(3);
 
-            Setting::where('key', 'app_name')->update(['value' => $request->config_app_name]);
+        //     Setting::where('key', 'app_name')->update(['value' => $request->config_app_name]);
 
-            if (Cache::has('last_updated_at')) {
-                Setting::where('key', 'last_update_date')->update(['value' => Cache::get('last_updated_at')]);
-                Cache::forget('last_updated_at');
-            }
+        //     if (Cache::has('last_updated_at')) {
+        //         Setting::where('key', 'last_update_date')->update(['value' => Cache::get('last_updated_at')]);
+        //         Cache::forget('last_updated_at');
+        //     }
 
             Cache::forget('setting');
             session()->put('step-5-complete', true);
 
             return response()->json(['success' => true, 'message' => 'Configuration Successfully Saved'], 200);
-        } catch (Exception $e) {
-            Log::error($e);
+        // } catch (Exception $e) {
+        //     Log::error($e);
 
-            return response()->json(['success' => false, 'message' => 'Configuration Failed'], 200);
-        }
+        //     return response()->json(['success' => false, 'message' => 'Configuration Failed'], 200);
+        // }
     }
     public function smtp() {
         $step = Configuration::stepExists();
-        if($step == 5 || !$this->requirementsCompleteStatus()){
-            return redirect()->route( 'setup.requirements' );
-        }
+        // if($step == 5 || !$this->requirementsCompleteStatus()){
+        //     return redirect()->route( 'setup.requirements' );
+        // }
         if ( $step < 3 ) {
             return redirect()->route( 'setup.configuration' );
         }
         $email = null;
-        $setting_info = Cache::get('setting');
-        if($step >= 4 && ($setting_info->mail_username != 'mail_username' && $setting_info->mail_password != 'mail_password')){
-            $email = [];
-            $email['mail_host'] = $setting_info->mail_host;
-            $email['email'] = $setting_info->mail_sender_email;
-            $email['smtp_username'] = $setting_info->mail_username;
-            $email['smtp_password'] = $setting_info->mail_password;
-            $email['mail_port'] = $setting_info->mail_port;
-            $email['mail_encryption'] = $setting_info->mail_encryption;
-            $email['mail_sender_name'] = $setting_info->mail_sender_name;
+        // $setting_info = Cache::get('setting');
+        // if($step >= 4 && ($setting_info->mail_username != 'mail_username' && $setting_info->mail_password != 'mail_password')){
+        //     $email = [];
+        //     $email['mail_host'] = $setting_info->mail_host;
+        //     $email['email'] = $setting_info->mail_sender_email;
+        //     $email['smtp_username'] = $setting_info->mail_username;
+        //     $email['smtp_password'] = $setting_info->mail_password;
+        //     $email['mail_port'] = $setting_info->mail_port;
+        //     $email['mail_encryption'] = $setting_info->mail_encryption;
+        //     $email['mail_sender_name'] = $setting_info->mail_sender_name;
 
-            $email = (object) $email;
-        }
+        //     $email = (object) $email;
+        // }
         return view( 'installer::smtp',compact('email') );
     }
     public function smtpSetup( Request $request ) {
-        try {
-            $rules = [
-                'mail_host'       => 'required',
-                'email'           => 'required',
-                'smtp_username'   => 'required',
-                'smtp_password'   => 'required',
-                'mail_port'       => 'required',
-                'mail_encryption' => 'required',
-                'mail_sender_name' => 'required',
-            ];
-            $customMessages = [
-                'mail_host.required'       => 'Mail host is required',
-                'email.required'           => 'Email is required',
-                'smtp_username.required'   => 'Smtp username is required',
-                'smtp_password.unique'     => 'Smtp password is required',
-                'mail_port.required'       => 'Mail port is required',
-                'mail_encryption.required' => 'Mail encryption is required',
-                'mail_sender_name.required' => 'Mail Sender Name is required',
-            ];
-            $this->validate( $request, $rules, $customMessages );
+        // try {
+        //     $rules = [
+        //         'mail_host'       => 'required',
+        //         'email'           => 'required',
+        //         'smtp_username'   => 'required',
+        //         'smtp_password'   => 'required',
+        //         'mail_port'       => 'required',
+        //         'mail_encryption' => 'required',
+        //         'mail_sender_name' => 'required',
+        //     ];
+        //     $customMessages = [
+        //         'mail_host.required'       => 'Mail host is required',
+        //         'email.required'           => 'Email is required',
+        //         'smtp_username.required'   => 'Smtp username is required',
+        //         'smtp_password.unique'     => 'Smtp password is required',
+        //         'mail_port.required'       => 'Mail port is required',
+        //         'mail_encryption.required' => 'Mail encryption is required',
+        //         'mail_sender_name.required' => 'Mail Sender Name is required',
+        //     ];
+        //     $this->validate( $request, $rules, $customMessages );
 
-            Setting::where('key', 'mail_host')->update(['value' => $request->mail_host]);
-            Setting::where('key', 'mail_sender_email')->update(['value' => $request->email]);
-            Setting::where('key', 'mail_username')->update(['value' => $request->smtp_username]);
-            Setting::where('key', 'mail_password')->update(['value' => $request->smtp_password]);
-            Setting::where('key', 'mail_port')->update(['value' => $request->mail_port]);
-            Setting::where('key', 'mail_encryption')->update(['value' => $request->mail_encryption]);
-            Setting::where('key', 'mail_sender_name')->update(['value' => $request->mail_sender_name]);
+        //     Setting::where('key', 'mail_host')->update(['value' => $request->mail_host]);
+        //     Setting::where('key', 'mail_sender_email')->update(['value' => $request->email]);
+        //     Setting::where('key', 'mail_username')->update(['value' => $request->smtp_username]);
+        //     Setting::where('key', 'mail_password')->update(['value' => $request->smtp_password]);
+        //     Setting::where('key', 'mail_port')->update(['value' => $request->mail_port]);
+        //     Setting::where('key', 'mail_encryption')->update(['value' => $request->mail_encryption]);
+        //     Setting::where('key', 'mail_sender_name')->update(['value' => $request->mail_sender_name]);
 
             Configuration::updateStep( 4 );
 
@@ -275,10 +275,10 @@ class InstallerController extends Controller
             Cache::forget('setting');
 
             return response()->json( ['success' => true, 'message' => 'Successfully setup mail SMTP'], 200 );
-        } catch ( Exception $e ) {
-            Log::error($e->getMessage());
-            return response()->json( ['success' => false, 'message' => 'Failed to Setup SMTP'], 200 );
-        }
+        // } catch ( Exception $e ) {
+        //     Log::error($e->getMessage());
+        //     return response()->json( ['success' => false, 'message' => 'Failed to Setup SMTP'], 200 );
+        // }
     }
 
     public function smtpSkip( ) {
@@ -289,33 +289,33 @@ class InstallerController extends Controller
 
     public function setupComplete() {
         session()->put( 'step-7-complete', true );
-        if ( Configuration::setupStepCheck( 4 )  && $this->requirementsCompleteStatus() ) {
-            $envContent = File::get( base_path( '.env' ) );
-            $envContent = preg_replace( ['/APP_ENV=(.*)\s/','/APP_DEBUG=(.*)\s/',], ['APP_ENV=' . 'production' . "\n",'APP_DEBUG=' . 'false' . "\n",], $envContent );
-            if ( $envContent !== null ) {
-                File::put( base_path( '.env' ), $envContent );
-            }
+        // if ( Configuration::setupStepCheck( 4 )  && $this->requirementsCompleteStatus() ) {
+        //     $envContent = File::get( base_path( '.env' ) );
+        //     $envContent = preg_replace( ['/APP_ENV=(.*)\s/','/APP_DEBUG=(.*)\s/',], ['APP_ENV=' . 'production' . "\n",'APP_DEBUG=' . 'false' . "\n",], $envContent );
+        //     if ( $envContent !== null ) {
+        //         File::put( base_path( '.env' ), $envContent );
+        //     }
 
-            return view( 'installer::complete' );
-        }
-        if ( Configuration::setupStepCheck( 5 ) && $this->requirementsCompleteStatus() ) {
-            return $this->completedSetup( 'home' );
-        }
+        //     return view( 'installer::complete' );
+        // }
+        // if ( Configuration::setupStepCheck( 5 ) && $this->requirementsCompleteStatus() ) {
+        //     return $this->completedSetup( 'home' );
+        // }
 
-        if ( Configuration::stepExists() < 4 ) {
-            return redirect()->route( 'setup.smtp' );
-        }
+        // if ( Configuration::stepExists() < 4 ) {
+        //     return redirect()->route( 'setup.smtp' );
+        // }
 
         return redirect()->back()->withInput()->withErrors( ['errors' => 'Setup Is Incomplete hh'] );
     }
 
     public function launchWebsite( $type ) {
-        if ( Configuration::setupStepCheck( 4 ) ) {
-            Configuration::updateStep( 5 );
-            return $this->completedSetup( $type );
-        } elseif ( Configuration::setupStepCheck( 5 ) ) {
-            return $this->completedSetup( $type );
-        }
+        // if ( Configuration::setupStepCheck( 4 ) ) {
+        //     Configuration::updateStep( 5 );
+        //     return $this->completedSetup( $type );
+        // } elseif ( Configuration::setupStepCheck( 5 ) ) {
+        //     return $this->completedSetup( $type );
+        // }
 
         return redirect()->back()->withInput()->withErrors( ['errors' => 'Setup Is Incomplete'] );
     }
