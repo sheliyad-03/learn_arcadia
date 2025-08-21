@@ -14,7 +14,7 @@ class GlobalSettingInfoSeeder extends Seeder
     public function run(): void
     {
         $setting_data = [
-            'app_name' => 'SkillGro',
+            'app_name' => 'LearnArcadia',
             'version' => '2.6.0',
             'logo' => 'uploads/website-images/logo.svg',
             'timezone' => 'Asia/Dhaka',

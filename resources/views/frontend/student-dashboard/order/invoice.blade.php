@@ -167,7 +167,7 @@
                         <tr>
                             <td class="left">
                                 <a href="javascript:;">
-                                    <img src="{{ asset($setting->logo) }}" alt="">
+                                    <img src="{{ asset($setting->logo) }}" alt="" style="width: 208%">
                                 </a>
                                 @if ($order->isBundleOrder())
                                     <br>

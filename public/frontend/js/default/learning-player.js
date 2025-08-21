@@ -240,7 +240,7 @@ $(document).ready(function () {
                             <img src="/uploads/website-images/quiz.png" alt="">
                             <h6 class="mt-2">${file_info.title}</h6>
                             <p>${quiz_st_des_txt}</p>
-                            <a href="/student/learning/quiz/${file_info.id}" class="btn btn-primary">${quiz_st_txt}</a>
+                            <a href="/learn_arcadia/student/learning/quiz/${file_info.id}" class="btn btn-primary">${quiz_st_txt}</a>
                         </div>
                     </div>
                 </div>`;

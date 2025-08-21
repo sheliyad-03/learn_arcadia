@@ -2431,7 +2431,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 --
 
 INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
-(1, 'app_name', 'SkillGro', '2024-06-03 02:02:30', '2024-06-25 00:17:45'),
+(1, 'app_name', 'LearnArcadia', '2024-06-03 02:02:30', '2024-06-25 00:17:45'),
 (2, 'version', '2.6.0', '2024-06-03 02:02:30', '2024-06-03 02:02:30'),
 (3, 'logo', 'uploads/website-images/logo.svg', '2024-06-03 02:02:30', '2024-06-04 06:28:37'),
 (4, 'timezone', 'Africa/Abidjan', '2024-06-03 02:02:30', '2024-06-25 00:17:45'),
