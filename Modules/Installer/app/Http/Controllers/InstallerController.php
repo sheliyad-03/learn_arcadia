@@ -124,55 +124,55 @@ class InstallerController extends Controller
 
     public function account()
     {
-        $step = Configuration::stepExists();
-        if ( $step >= 1 && $step < 5 && $this->requirementsCompleteStatus()) {
-            $admin = $step >= 2 ? Admin::select('name','email')->first() : null;
+        // $step = Configuration::stepExists();
+        // if ( $step >= 1 && $step < 5 && $this->requirementsCompleteStatus()) {
+        //     $admin = $step >= 2 ? Admin::select('name','email')->first() : null;
             return view( 'installer::account',compact('admin') );
-        }
-        if($step == 5 || !$this->requirementsCompleteStatus()){
-            return redirect()->route( 'setup.requirements' );
-        }
-        return redirect()->route( 'setup.database' );
+        // }
+        // if($step == 5 || !$this->requirementsCompleteStatus()){
+        //     return redirect()->route( 'setup.requirements' );
+        // }
+        // return redirect()->route( 'setup.database' );
     }
 
     public function accountSubmit(Request $request)
     {
-        try {
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'password' => 'required|same:confirm_password',
-            ]);
+        // try {
+        //     $request->validate([
+        //         'name' => 'required',
+        //         'email' => 'required|email',
+        //         'password' => 'required|same:confirm_password',
+        //     ]);
 
-            $role = Role::first();
-            if (! Admin::first()) {
-                $admin = new Admin();
-                $admin->name = $request->name;
-                $admin->email = $request->email;
-                $admin->image = 'uploads/website-images/admin.jpg';
-                $admin->password = Hash::make($request->password);
-                $admin->status = UserStatus::ACTIVE->value;
-                $admin->save();
-            } else {
-                $admin = Admin::first();
-                $admin->name = $request->name;
-                $admin->email = $request->email;
-                $admin->image = 'uploads/website-images/admin.jpg';
-                $admin->password = Hash::make($request->password);
-                $admin->status = UserStatus::ACTIVE->value;
-                $admin->save();
-            }
-            $admin?->assignRole($role);
+        //     $role = Role::first();
+        //     if (! Admin::first()) {
+        //         $admin = new Admin();
+        //         $admin->name = $request->name;
+        //         $admin->email = $request->email;
+        //         $admin->image = 'uploads/website-images/admin.jpg';
+        //         $admin->password = Hash::make($request->password);
+        //         $admin->status = UserStatus::ACTIVE->value;
+        //         $admin->save();
+        //     } else {
+        //         $admin = Admin::first();
+        //         $admin->name = $request->name;
+        //         $admin->email = $request->email;
+        //         $admin->image = 'uploads/website-images/admin.jpg';
+        //         $admin->password = Hash::make($request->password);
+        //         $admin->status = UserStatus::ACTIVE->value;
+        //         $admin->save();
+        //     }
+        //     $admin?->assignRole($role);
 
             Configuration::updateStep(2);
             session()->put('step-4-complete', true);
 
             return response()->json(['success' => true, 'message' => 'Admin Account Successfully Created'], 200);
-        } catch (Exception $e) {
-            Log::error($e);
+        // } catch (Exception $e) {
+        //     Log::error($e);
 
-            return response()->json(['success' => false, 'message' => 'Failed to Create Admin Account'], 200);
-        }
+        //     return response()->json(['success' => false, 'message' => 'Failed to Create Admin Account'], 200);
+        // }
     }
 
     public function configuration()
